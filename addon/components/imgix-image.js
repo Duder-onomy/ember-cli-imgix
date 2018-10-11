@@ -6,7 +6,7 @@ import config from 'ember-get-config';
 import EmberError from '@ember/error';
 import ImgixClient from 'imgix-core-js';
 import URI from 'jsuri';
-import { debounce } from '@ember/runloop';
+import { debounce, scheduleOnce } from '@ember/runloop';
 import { toFixed, constants } from '../common';
 
 export default Component.extend(ResizeAware, {
@@ -16,7 +16,7 @@ export default Component.extend(ResizeAware, {
     'alt',
     'crossorigin',
     'draggable',
-    'src', 
+    'src',
   ],
 
   path: null, // The path to your image
@@ -84,6 +84,18 @@ export default Component.extend(ResizeAware, {
         this.element.clientHeight ||
         this.element.parentElement.clientHeight
     );
+  },
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+
+    if (get(this, 'onLoad')) {
+      scheduleOnce('afterRender', this, () => {
+        if (!this.isDestroyed && this.element.complete) {
+          this._handleImageLoad();
+        }
+      });
+    }
   },
 
   didUpdateAttrs(...args) {
