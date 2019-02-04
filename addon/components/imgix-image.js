@@ -89,7 +89,7 @@ export default Component.extend(ResizeAware, {
   didReceiveAttrs() {
     this._super(...arguments);
 
-    if (get(this, 'onLoad')) {
+    if (get(this, 'onLoad') && typeof FastBoot === 'undefined') {
       scheduleOnce('afterRender', this, () => {
         if (!this.isDestroyed && this.element.complete) {
           this._handleImageLoad();
