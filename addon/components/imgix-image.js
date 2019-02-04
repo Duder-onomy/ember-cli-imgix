@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed, get, set } from '@ember/object';
+import { computed, get, set, getWithDefault } from '@ember/object';
 import ResizeAware from 'ember-resize-aware/mixins/resize-aware';
 import { tryInvoke } from '@ember/utils';
 import config from 'ember-get-config';
@@ -16,7 +16,7 @@ export default Component.extend(ResizeAware, {
     'alt',
     'crossorigin',
     'draggable',
-    'src', 
+    'src',
   ],
 
   path: null, // The path to your image
@@ -174,7 +174,7 @@ export default Component.extend(ResizeAware, {
       }
 
       const options = {
-        ...get(this, 'options'),
+        ...getWithDefault(config, 'APP.imgix.defaultParams', {}),
         ...debugParams,
         ...theseOptions,
         ...pathAsUri.queryPairs.reduce((memo, param) => {
